@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import './styles/tailwind.css';
 
+import Step1PersonalInfo from './components/Form/Step1PersonalInfo';
 import Step2Experience from './components/Form/Step2Experience';
 import Step3Education from './components/Form/Step3Education';
-
 import Step4Skills from './components/Form/Step4Skills';
 import Step5Summary from './components/Form/Step5Summary';
 
-
-
 function App() {
-  const [step, setStep] = useState(2); // 2: سوابق شغلی، 3: تحصیلی، 4: مهارت‌ها، 5: خلاصه
+  const [step, setStep] = useState(1); // 1: اطلاعات شخصی، 2: سوابق شغلی، 3: تحصیلی، 4: مهارت‌ها، 5: خلاصه
+
+  // اطلاعات شخصی
+  const [personalInfo, setPersonalInfo] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+  });
 
   // سوابق شغلی
   const [experiences, setExperiences] = useState([
@@ -24,6 +29,11 @@ function App() {
   const [skills, setSkills] = useState(['']);
   // خلاصه رزومه
   const [summary, setSummary] = useState('');
+
+  // Handlers for personal info
+  const handlePersonalInfoChange = (field) => (e) => {
+    setPersonalInfo({ ...personalInfo, [field]: e.target.value });
+  };
 
   // Handlers for experiences
   const handleExpAdd = () => {
@@ -63,7 +73,14 @@ function App() {
   const handleBack = () => setStep(prev => prev - 1);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      {step === 1 && (
+        <Step1PersonalInfo
+          formData={personalInfo}
+          handleChange={handlePersonalInfoChange}
+          nextStep={handleNext}
+        />
+      )}
       {step === 2 && (
         <Step2Experience
           experiences={experiences}
@@ -107,3 +124,4 @@ function App() {
 }
 
 export default App;
+
