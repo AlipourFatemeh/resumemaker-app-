@@ -7,8 +7,11 @@ import Step3Education from './components/Form/Step3Education';
 import Step4Skills from './components/Form/Step4Skills';
 import Step5Summary from './components/Form/Step5Summary';
 
+import TemplateSelector from './components/Preview/TemplateSelector';
+import ResumePreview from './components/Preview/ResumePreview';
+
 function App() {
-  const [step, setStep] = useState(1); // 1: اطلاعات شخصی، 2: سوابق شغلی، 3: تحصیلی، 4: مهارت‌ها، 5: خلاصه
+  const [step, setStep] = useState(1); // 1: اطلاعات شخصی، 2: سوابق شغلی، 3: تحصیلی، 4: مهارت‌ها، 5: خلاصه، 6: پیش‌نمایش
 
   // اطلاعات شخصی
   const [personalInfo, setPersonalInfo] = useState({
@@ -21,14 +24,20 @@ function App() {
   const [experiences, setExperiences] = useState([
     { title: '', company: '', location: '', startDate: '', endDate: '' }
   ]);
+
   // سوابق تحصیلی
   const [educations, setEducations] = useState([
     { degree: '', field: '', university: '', startDate: '', endDate: '' }
   ]);
+
   // مهارت‌ها
   const [skills, setSkills] = useState(['']);
+
   // خلاصه رزومه
   const [summary, setSummary] = useState('');
+
+  // قالب انتخاب شده
+  const [selectedTemplate, setSelectedTemplate] = useState(1);
 
   // Handlers for personal info
   const handlePersonalInfoChange = (field) => (e) => {
@@ -69,8 +78,12 @@ function App() {
   };
 
   // Navigation
-  const handleNext = () => setStep(prev => prev + 1);
-  const handleBack = () => setStep(prev => prev - 1);
+  const handleNext = () => {
+    if (step < 6) setStep(prev => prev + 1);
+  };
+  const handleBack = () => {
+    if (step > 1) setStep(prev => prev - 1);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -115,13 +128,31 @@ function App() {
         <Step5Summary
           summary={summary}
           onChange={setSummary}
-          onNext={() => alert('رزومه ثبت شد!')}
+          onNext={handleNext}
           onBack={handleBack}
         />
+      )}
+      {step === 6 && (
+        <div className="max-w-4xl w-full space-y-6">
+          <TemplateSelector selectedTemplate={selectedTemplate} onSelect={setSelectedTemplate} />
+          <ResumePreview
+            personalInfo={personalInfo}
+            experiences={experiences}
+            educations={educations}
+            skills={skills}
+            summary={summary}
+            selectedTemplate={selectedTemplate}
+          />
+          <div className="flex justify-between">
+            <button onClick={handleBack} className="px-4 py-2 bg-gray-200 rounded">قبلی</button>
+            <button onClick={() => alert('رزومه ثبت شد!')} className="px-4 py-2 bg-blue-600 text-white rounded">ثبت نهایی</button>
+          </div>
+        </div>
       )}
     </div>
   );
 }
 
 export default App;
+
 
